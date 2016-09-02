@@ -25,43 +25,43 @@ class MyBot < Ebooks::Bot
   def on_startup
     #oncd a day
     puts("The bot is active")
-    #scheduler.every '1m' do # See https://github.com/jmettraux/rufus-scheduler
+    scheduler.cron '00 18 * * *' do # See https://github.com/jmettraux/rufus-scheduler
       ### Find the temperature
-    url = "http://api.openweathermap.org/data/2.5/weather?lat=44.461869&lon=-93.153986&units=imperial&APPID=#{$key.weather_api_key}"  #url for carleton weather
-    uri = URI(url)  #convert to url object
-    response = Net::HTTP.get(uri) #use the api to get the weather in JSON format
-    results = JSON.parse(response)  #parse the responses into a hash object
-    temp = (results["main"]["temp_min"]) #get temperature
-    wind = (results["wind"]["speed"])
-    
-    windChillTemp = (34.74) + (0.6215*temp) - (34.75*(wind**0.16)) + (0.4275*temp*(wind**0.16)) #convert temperature to windchill
-    
-    #remove some decimals 
-    temp = (temp * 10).floor / 10
-    windChillTemp = (windChillTemp * 10).floor / 10
-    puts(temp)
-    puts(windChillTemp)
-    ### Tweeting section
-    #if temp < temp_cutoff #if it is cold enough to tweet
-    tweet_String = "Today's low was #{windChillTemp}. Classes were not canceled." #create the 
-    
-    ###download the graph
-    d = Date.today
+      url = "http://api.openweathermap.org/data/2.5/weather?lat=44.461869&lon=-93.153986&units=imperial&APPID=#{$key.weather_api_key}"  #url for carleton weather
+      uri = URI(url)  #convert to url object
+      response = Net::HTTP.get(uri) #use the api to get the weather in JSON format
+      results = JSON.parse(response)  #parse the responses into a hash object
+      temp = (results["main"]["temp_min"]) #get temperature
+      wind = (results["wind"]["speed"])
+      
+      windChillTemp = (34.74) + (0.6215*temp) - (34.75*(wind**0.16)) + (0.4275*temp*(wind**0.16)) #convert temperature to windchill
+      
+      #remove some decimals 
+      temp = (temp * 10).floor / 10
+      windChillTemp = (windChillTemp * 10).floor / 10
+      puts(temp)
+      puts(windChillTemp)
+      ### Tweeting section
+      #if temp < temp_cutoff #if it is cold enough to tweet
+      tweet_String = "Today's low was #{windChillTemp}. Classes were not canceled." #create the 
+      
+      ###download the graph
+      d = Date.today
 
-    #get a line graph of the temperature of the last 24 hours from the carleton website
-    picurl = ("http://weather.carleton.edu/rplot.php?year=#{d.year}&month=#{d.month}&day=#{(d.day-1)}&hour=18&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=18&check1=temp&end=end&graphtype=line")
-    
-    #Download the graph
-    File.open('graph.gif', 'wb') do |fo|
-      fo.write open(picurl).read 
+      #get a line graph of the temperature of the last 24 hours from the carleton website
+      picurl = ("http://weather.carleton.edu/rplot.php?year=#{d.year}&month=#{d.month}&day=#{(d.day-1)}&hour=18&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=18&check1=temp&end=end&graphtype=line")
+      
+      #Download the graph
+      File.open('graph.gif', 'wb') do |fo|
+        fo.write open(picurl).read 
+      end
+
+      #make the tweet with the 
+      pictweet(tweet_String,"graph.gif")
+      #end
+
+      # Tweet something every 24 hours
     end
-
-    #make the tweet with the 
-    pictweet(tweet_String,"graph.gif")
-    #end
-
-    # Tweet something every 24 hours
-    #end
   end
 
   def on_message(dm)
