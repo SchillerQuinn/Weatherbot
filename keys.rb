@@ -1,0 +1,27 @@
+class Keychain
+	@@weather_api_key = '' #api for openweather.org
+	@@consumer_key = '' # Your app consumer key
+	@@consumer_secret = '' # Your app consumer secret
+	@@access_token = "" # Token connecting the app to this account
+	@@access_token_secret = "" # Secret connecting the app to this account
+
+	def self.weather_api_key #method for accessing weather_api_key
+		@@weather_api_key
+	end
+
+	def self.consumer_key #method for accessing consumer_key
+		@@consumer_key
+	end
+
+	def self.consumer_secret #method for accessing consumer_key
+		@@consumer_secret
+	end
+
+	def self.access_token #method for accessing access_token
+		@@access_token
+	end
+
+	def self.access_token_secret #method for accessing access_token_secret
+		@@access_token_secret
+	end
+end

@@ -3,9 +3,9 @@ require 'date'
 require 'net/http'
 require 'json'
 require 'open-uri'
+require_relative 'keys'
 
-
-api_key = '8137b65472cffbef8aad8e7270913e01'
+k = Keychain #make an instance of the keychain class that holds the keys
 temp_cutoff = -10 #the temperature below which will cause the bot to tweet
 
 # This is an example bot definition with event handlers commented out
@@ -16,8 +16,8 @@ class MyBot < Ebooks::Bot
   def configure
     # Consumer details come from registering an app at https://dev.twitter.com/
     # Once you have consumer details, use "ebooks auth" for new access tokens
-    self.consumer_key = '' # Your app consumer key
-    self.consumer_secret = '' # Your app consumer secret
+    self.consumer_key = k.consumer_key # Your app consumer key
+    self.consumer_secret = k.consumer_secret # Your app consumer secret
 
     # Users to block instead of interacting with
     #self.blacklist = ['tnietzschequote']
@@ -29,15 +29,13 @@ class MyBot < Ebooks::Bot
   def on_startup
     #oncd a day
     scheduler.every '24h' do
-
       ### Find the temperature
-      pi_key = '8137b65472cffbef8aad8e7270913e01' #api key for weather
-      url = 'http://api.openweathermap.org/data/2.5/weather?lat=44.461869&lon=-93.153986&APPID='+api_key  #url for carleton weather
+      url = 'http://api.openweathermap.org/data/2.5/weather?lat=44.461869&lon=-93.153986&APPID='+k.weather_api_key  #url for carleton weather
       uri = URI(url)  #convert to url object
       response = Net::HTTP.get(uri) #use the api to get the weather in JSON format
       results = JSON.parse(response)  #parse the responses into a hash object
-      temp = (results["main"]["temp_min"]*9/5) − 459.67 #convert into farinheit
-      
+      temp = (results["main"]["temp_min"]) #get temperature
+      temp = (temp *9/5)-459.67 #convert into farinheit
       ### Tweeting section
       if temp < temp_cutoff #if it is cold enough to tweet
         tweet_String = "Today's low was " + temp + " but classes were still not cancled!" #create the 
@@ -54,7 +52,7 @@ class MyBot < Ebooks::Bot
         end
 
         #make the tweet with the 
-        pictweet(tweet_String,"graph.gif")
+        #pictweet(tweet_String,"graph.gif")
       end
 
       # Tweet something every 24 hours
@@ -97,6 +95,6 @@ end
 
 # Make a MyBot and attach it to an account
 MyBot.new("Weatherbot") do |bot|
-  bot.access_token = "" # Token connecting the app to this account
-  bot.access_token_secret = "" # Secret connecting the app to this account
+  bot.access_token = k.access_token # Token connecting the app to this account
+  bot.access_token_secret = k.access_token_secret # Secret connecting the app to this account
 end
