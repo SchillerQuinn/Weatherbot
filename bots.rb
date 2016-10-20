@@ -25,7 +25,7 @@ class MyBot < Ebooks::Bot
   def on_startup
     #oncd a day
     puts("The bot is active")
-    scheduler.cron '00 18 * * *' do # See https://github.com/jmettraux/rufus-scheduler
+    scheduler.cron '00 23 * * *' do # See https://github.com/jmettraux/rufus-scheduler
       ### Find the temperature
       url = "http://api.openweathermap.org/data/2.5/weather?lat=44.461869&lon=-93.153986&units=imperial&APPID=#{$key.weather_api_key}"  #url for carleton weather
       uri = URI(url)  #convert to url object
@@ -49,7 +49,7 @@ class MyBot < Ebooks::Bot
       d = Date.today
 
       #get a line graph of the temperature of the last 24 hours from the carleton website
-      picurl = ("http://weather.carleton.edu/rplot.php?year=#{d.year}&month=#{d.month}&day=#{(d.day-1)}&hour=18&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=18&check1=temp&end=end&graphtype=line")
+      picurl = ("http://weather.carleton.edu/rplot.php?year=#{d.year}&month=#{d.month}&day=#{(d.day-1)}&hour=17&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=17&check1=temp&end=end&graphtype=line")
       
       #Download the graph
       File.open('graph.gif', 'wb') do |fo|
