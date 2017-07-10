@@ -43,13 +43,14 @@ class MyBot < Ebooks::Bot
       puts(windChillTemp)
       ### Tweeting section
       #if temp < temp_cutoff #if it is cold enough to tweet
-      tweet_String = "Today's low was #{windChillTemp}. Classes were not canceled." #create the 
+      tweet_String = "Today's low was #{windChillTemp}. Classes were not canceled." #create the tweet
       
       ###download the graph
       d = Date.today
+      y = Date.yesterday
 
       #get a line graph of the temperature of the last 24 hours from the carleton website
-      picurl = ("http://weather.carleton.edu/rplot.php?year=#{d.year}&month=#{d.month}&day=#{(d.day-1)}&hour=17&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=17&check1=temp&end=end&graphtype=line")
+      picurl = ("http://weather.carleton.edu/rplot.php?year=#{y.year}&month=#{y.month}&day=#{(y.day)}&hour=17&year2=#{d.year}&month2=#{d.month}&day2=#{d.day}&hour2=17&check1=temp&end=end&graphtype=line")
       
       #Download the graph
       File.open('graph.gif', 'wb') do |fo|
